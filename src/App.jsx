@@ -1,5 +1,8 @@
 import { useState } from "react";
-import Padlock from "./Padlock.jsx";
+import Lampu from "./Lampu.jsx";
+import Pintu from "./Pintu.jsx";
+import PapanLogin from "./PapanLogin.jsx";
+import Ruangan from "./Ruangan.jsx";
 import "./App.css";
 
 // ====== PERSONALISASI: ganti sesuai dirimu ======
@@ -29,19 +32,19 @@ function kapital(teks) {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
+// App menyimpan SEMUA state (lifting state up), lalu membagikannya ke komponen anak lewat props.
 export default function App() {
   const [nama, setNama] = useState("");
   const [sandi, setSandi] = useState("");
   const [status, setStatus] = useState("idle"); // idle | error | success
   const [pesan, setPesan] = useState("");
-  const [lampuNyala, setLampuNyala] = useState(false); // mulai gelap, penghuni harus nyalakan lampu
+  const [lampuNyala, setLampuNyala] = useState(false);
   const [salam, setSalam] = useState("");
 
   const gagal = (teks) => {
     setPesan(teks);
     setStatus("error");
-    // reset agar animasi getar bisa diputar ulang
-    setTimeout(() => setStatus("idle"), 500);
+    setTimeout(() => setStatus("idle"), 500); // reset agar getar bisa diulang
   };
 
   const handleSubmit = (e) => {
@@ -49,8 +52,7 @@ export default function App() {
     if (!lampuNyala) return gagal(PESAN_GELAP);
     if (!nama.trim() || !sandi) return gagal(PESAN_KOSONG);
     if (sandi !== PASSWORD_BENAR) {
-      const acak = PESAN_SALAH[Math.floor(Math.random() * PESAN_SALAH.length)];
-      return gagal(acak);
+      return gagal(PESAN_SALAH[Math.floor(Math.random() * PESAN_SALAH.length)]);
     }
     setPesan("");
     setSalam(sapaanWaktu(new Date().getHours()));
@@ -62,81 +64,37 @@ export default function App() {
     setSandi("");
   };
 
-  const terbuka = status === "success";
   const jam = new Date().getHours();
   const malamLarut = jam >= 22 || jam < 4;
+  const terbuka = status === "success";
 
   return (
     <main className={`scene ${lampuNyala ? "" : "scene--gelap"}`}>
-      <button
-        type="button"
-        className="lampu"
-        onClick={() => setLampuNyala((v) => !v)}
-        aria-label={lampuNyala ? "Matikan lampu teras" : "Nyalakan lampu teras"}
-        aria-pressed={lampuNyala}
-      >
-        <span className="lampu__kabel" />
-        <span className="lampu__bohlam" />
-      </button>
+      <Lampu nyala={lampuNyala} onToggle={() => setLampuNyala((v) => !v)} />
 
       <div className="kusen">
-        <section className="ruangan" aria-live="polite">
-          <h2>
-            {salam}, {kapital(nama) || "penghuni"}.
-          </h2>
-          <p>Pintu kamar {NOMOR_KAMAR} sudah terbuka.</p>
-          <p className="ruangan__kalimat">
-            {malamLarut ? "Sudah larut, jangan begadang ya." : KALIMAT_KHAS}
-          </p>
-          <button type="button" className="tombol tombol--kecil" onClick={keluar}>
-            Tutup pintu
-          </button>
-        </section>
+        <Ruangan
+          salam={salam}
+          nama={kapital(nama)}
+          nomorKamar={NOMOR_KAMAR}
+          kalimat={malamLarut ? "Sudah larut, jangan begadang ya." : KALIMAT_KHAS}
+          onTutup={keluar}
+        />
 
-        <div className={`pintu ${terbuka ? "pintu--buka" : ""}`}>
-          <div className="plakat" aria-label={`Kamar nomor ${NOMOR_KAMAR}`}>
-            No. {NOMOR_KAMAR}
-          </div>
-
-          <form
-            className={`papan ${status === "error" ? "papan--getar" : ""}`}
+        <Pintu terbuka={terbuka} nomorKamar={NOMOR_KAMAR}>
+          <PapanLogin
+            namaKos={NAMA_KOS}
+            nama={nama}
+            sandi={sandi}
+            onNamaChange={setNama}
+            onSandiChange={setSandi}
             onSubmit={handleSubmit}
-            noValidate
-          >
-            <h1>{NAMA_KOS}</h1>
-            <p className="papan__sub">Masuk sebagai penghuni</p>
-
-            <label htmlFor="nama">Nama penghuni</label>
-            <input
-              id="nama"
-              value={nama}
-              onChange={(e) => setNama(e.target.value)}
-              autoComplete="username"
-              disabled={!lampuNyala}
-            />
-
-            <label htmlFor="sandi">Kata sandi</label>
-            <input
-              id="sandi"
-              type="password"
-              value={sandi}
-              onChange={(e) => setSandi(e.target.value)}
-              autoComplete="current-password"
-              disabled={!lampuNyala}
-            />
-
-            <p className="papan__pesan" role="alert">
-              {!lampuNyala ? PESAN_GELAP : pesan}
-            </p>
-
-            <button type="submit" className="tombol" disabled={!lampuNyala}>
-              <Padlock open={terbuka} />
-              Buka pintu
-            </button>
-            <p className="papan__hint">Demo: kata sandi kos123</p>
-          </form>
-          <span className="gagang" />
-        </div>
+            pesan={!lampuNyala ? PESAN_GELAP : pesan}
+            status={status}
+            lampuNyala={lampuNyala}
+            terbuka={terbuka}
+          />
+        </Pintu>
       </div>
     </main>
   );

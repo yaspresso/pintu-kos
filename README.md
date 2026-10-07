@@ -66,12 +66,10 @@ npm run deploy
 
 Di Vercel, project terhubung ke branch `main` sehingga setiap `git push` otomatis ter-deploy ulang.
 
-## Pembuat
+---
 
 Tia Risky Yasmin Saketang
 
-
 4243550014
 
-
-PSIK 24-
+PSIK 24-A

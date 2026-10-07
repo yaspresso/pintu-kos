@@ -2,7 +2,10 @@
 
 Formulir login interaktif bertema kehidupan sehari-hari anak kos, dibuat dengan React untuk Tugas Project 1 mata kuliah Pengembangan Web Modern.
 
-**Demo online:** https://yaspresso.github.io/pintu-kos/
+**Demo online:**
+
+- GitHub Pages: https://yaspresso.github.io/pintu-kos/
+- Vercel: https://pintu-kos.vercel.app
 
 ## Konsep
 
@@ -31,7 +34,7 @@ Form login berada di papan nama pada pintu kamar kos. Login hanya bisa dipakai s
 - React 19
 - Vite
 - CSS biasa (tanpa library tambahan)
-- Deploy: GitHub Pages (`gh-pages`)
+- Deploy: GitHub Pages (`gh-pages`) dan Vercel
 
 ## Struktur komponen
 
@@ -55,12 +58,20 @@ Lalu buka `http://localhost:5173/pintu-kos/`.
 
 ## Deploy
 
+Branch `main` berisi kode sumber. Situs di GitHub Pages dipublikasikan dari branch `gh-pages` (isi folder `dist`) dan diperbarui dengan:
+
 ```bash
 npm run deploy
 ```
 
+Di Vercel, project terhubung ke branch `main` sehingga setiap `git push` otomatis ter-deploy ulang.
+
 ## Pembuat
 
 Tia Risky Yasmin Saketang
+
+
 4243550014
-PSIK 24-A
+
+
+PSIK 24-

@@ -1,0 +1,136 @@
+:root {
+  --tembok: #1f3138;
+  --tembok-gelap: #0e171a;
+  --kayu: #8a5a3a;
+  --kayu-tua: #5e3b24;
+  --enamel: #f3efe4;
+  --kuningan: #c49a4a;
+  --cahaya: #ffd77a;
+  --tinta: #26211b;
+  --salah: #b3261e;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Bricolage Grotesque", system-ui, sans-serif; }
+
+.scene {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(80px, 14vh, 120px) 16px 24px;
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 12%, rgba(255, 215, 122, 0.35), transparent 70%),
+    var(--tembok);
+  transition: background 0.5s;
+}
+.scene--gelap { background: var(--tembok-gelap); }
+
+/* Lampu teras (klik untuk nyala/mati) */
+.lampu { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: none; border: 0; cursor: pointer; padding: 0 20px 8px; }
+.lampu:focus-visible { outline: 3px solid var(--cahaya); border-radius: 12px; }
+.lampu__kabel { display: block; width: 3px; height: 56px; margin: 0 auto; background: #0008; }
+.lampu__bohlam {
+  display: block; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--cahaya);
+  box-shadow: 0 0 40px 18px rgba(255, 215, 122, 0.55);
+  transition: all 0.4s;
+}
+.scene--gelap .lampu__bohlam { background: #5a5547; box-shadow: none; }
+
+/* Kusen dan pintu */
+.kusen {
+  position: relative;
+  width: min(360px, 100%);
+  min-height: 520px;
+  border: 14px solid var(--kayu-tua);
+  border-bottom-width: 6px;
+  background: #1a1206;
+  perspective: 1100px;
+}
+.ruangan {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  gap: 8px; padding: 24px; text-align: center; color: #3b2a14;
+  background: radial-gradient(circle at 50% 30%, #ffe9b0, #e8b25a);
+}
+.ruangan h2 { margin: 0; font-size: 1.5rem; font-weight: 800; }
+.ruangan p { margin: 0 0 12px; }
+
+.pintu {
+  position: relative; min-height: 500px;
+  display: grid; place-items: center; padding: 20px;
+  background: repeating-linear-gradient(90deg, var(--kayu) 0 46px, #7d5033 46px 48px);
+  transform-origin: left center;
+  transition: transform 1s cubic-bezier(.6, .05, .3, 1);
+}
+.pintu--buka { transform: rotateY(-78deg); pointer-events: none; }
+.gagang { position: absolute; right: 6px; top: 52%; width: 14px; height: 42px; border-radius: 8px; background: var(--kuningan); }
+
+/* Papan nama berisi form */
+.papan {
+  width: 100%; padding: 22px 20px 16px;
+  background: var(--enamel); color: var(--tinta);
+  border: 3px solid var(--tinta); border-radius: 6px;
+  box-shadow: 0 6px 0 #0004;
+}
+.papan h1 { margin: 0; font-size: 1.8rem; font-weight: 800; }
+.papan__sub { margin: 2px 0 14px; font-size: 0.95rem; }
+.papan label { display: block; margin: 10px 0 4px; font-weight: 600; font-size: 0.9rem; }
+.papan input {
+  width: 100%; padding: 10px; font: inherit;
+  border: 2px solid var(--tinta); border-radius: 4px; background: #fff;
+}
+.papan input:focus-visible { outline: 3px solid var(--kuningan); outline-offset: 1px; }
+.papan__pesan { min-height: 1.3em; margin: 8px 0; color: var(--salah); font-size: 0.9rem; font-weight: 600; }
+.papan__hint { margin: 10px 0 0; font-size: 0.8rem; opacity: 0.7; text-align: center; }
+
+.tombol {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 10px; font: inherit; font-weight: 800; font-size: 1rem;
+  color: #3b2a14; background: var(--kuningan);
+  border: 2px solid var(--tinta); border-radius: 4px; cursor: pointer;
+}
+.tombol:hover { filter: brightness(1.08); }
+.tombol:focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }
+.tombol--kecil { width: auto; padding: 8px 18px; }
+
+/* Gembok */
+.padlock { width: 22px; height: 28px; overflow: visible; }
+.padlock__shackle { stroke: #3b2a14; transition: transform 0.5s; transform-origin: 14px 28px; }
+.padlock--open .padlock__shackle { transform: translateY(-8px) rotate(-25deg); }
+.padlock__body { fill: #6b4a1f; }
+.padlock circle, .padlock rect:not(.padlock__body) { fill: #f3efe4; }
+
+/* Getar saat gagal */
+.papan--getar { animation: getar 0.45s; }
+@keyframes getar {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+/* Plakat nomor kamar */
+.plakat {
+  position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+  padding: 4px 16px;
+  background: var(--kuningan); color: #3b2a14;
+  border: 2px solid var(--tinta); border-radius: 4px;
+  font-weight: 800; font-size: 0.85rem; letter-spacing: 0.12em;
+  box-shadow: 0 3px 0 #0004;
+}
+
+/* Kalimat khas di dalam kamar */
+.ruangan__kalimat { font-style: italic; opacity: 0.8; }
+
+/* Saat lampu mati: papan redup dan form terkunci */
+.scene--gelap .papan { filter: brightness(0.6); }
+.papan input:disabled,
+.tombol:disabled { cursor: not-allowed; opacity: 0.7; }
+.tombol:disabled:hover { filter: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pintu, .papan--getar, .padlock__shackle, .lampu__bohlam, .scene { transition: none; animation: none; }
+}
